@@ -18,6 +18,8 @@ app = Flask(
     root_path=base_dir,
 )
 bcrypt = Bcrypt(app)
+from app.marshmellow import init_ma
+init_ma(app)
 
 from app.routes import auth_blueprint
 app.register_blueprint(auth_blueprint)

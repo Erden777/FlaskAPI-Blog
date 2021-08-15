@@ -77,7 +77,6 @@ class User(db.Model):
 
     @classmethod
     def cheek_auth_status(cls, auth_header):
-        print('model', auth_header)
         if auth_header:
             try:
                 auth_token = auth_header.split(" ")[1]
@@ -85,7 +84,7 @@ class User(db.Model):
             except IndexError:
                 responseObject = {
                     'status': 'fail',
-                    'message': 'Bearer token malformed.',
+                    'message': 'Bearer token invalid.',
                     'code':401
                 }
                 return responseObject
@@ -95,7 +94,6 @@ class User(db.Model):
             resp = cls.decode_auth_token(auth_token)
             if not isinstance(resp, str):
                 user = User.query.filter_by(id=resp).first()
-                print(user, 'user')
                 responseObject = {
                     'status': 'success',
                     'data': {

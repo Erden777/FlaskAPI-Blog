@@ -1,5 +1,7 @@
+from re import search
 from app.views.user import UserAPI, LoginAPI, RegisterAPI, LogoutAPI
-from app.views.blog import PostAPI
+from app.views.blog import PostAPI, PostSearchAPI
+from app.views.tags import TagAPI
 from flask_restful import Api
 from functools import wraps
 from flask import Blueprint
@@ -37,11 +39,27 @@ auth_blueprint.add_url_rule(
 )
 
 
-user_view = PostAPI.as_view('post_api')
+post_view = PostAPI.as_view('post_api')
 
 auth_blueprint.add_url_rule('/posts/', defaults={'post_id': None},
-                 view_func=user_view, methods=['GET',])
+                 view_func=post_view, methods=['GET',])
 
-auth_blueprint.add_url_rule('/posts/', view_func=user_view, methods=['POST',])
-auth_blueprint.add_url_rule('/posts/<int:post_id>', view_func=user_view,
+auth_blueprint.add_url_rule('/posts/', view_func=post_view, methods=['POST',])
+auth_blueprint.add_url_rule('/posts/<int:post_id>', view_func=post_view,
                  methods=['GET', 'PUT', 'DELETE'])
+
+
+tag_view = TagAPI.as_view('tag_api')
+
+auth_blueprint.add_url_rule('/tags/', defaults={'tag_id': None},
+                 view_func=tag_view, methods=['GET',])
+
+auth_blueprint.add_url_rule('/tags/', view_func=tag_view, methods=['POST',])
+auth_blueprint.add_url_rule('/tags/<int:tag_id>', view_func=tag_view,
+                 methods=['GET', 'PUT', 'DELETE'])
+
+
+search_view = PostSearchAPI.as_view('search_post_api')
+
+auth_blueprint.add_url_rule('/search/',
+                 view_func=search_view, methods=['POST',])

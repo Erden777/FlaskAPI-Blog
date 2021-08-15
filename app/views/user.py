@@ -6,6 +6,8 @@ from models.tag import Tag
 from models.blog import Blog
 from app.db import db
 from flask.views import MethodView
+from marshmallow import Schema, fields, EXCLUDE
+
 
 class RegisterAPI(MethodView):
     """
@@ -84,3 +86,8 @@ class LogoutAPI(MethodView):
             }
             return make_response(jsonify(responseObject)), 403
  
+
+class UserSchema(Schema):
+    id = fields.Str(required=True)
+    email = fields.Str(required=True)
+    admin = fields.Bool(required=True)

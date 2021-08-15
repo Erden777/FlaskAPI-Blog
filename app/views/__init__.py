@@ -2,6 +2,7 @@ from functools import wraps
 from flask import Flask, request, jsonify, make_response
 from models.user import User
 
+
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -19,6 +20,5 @@ def token_required(f):
             return jsonify({'message' : 'Token is invalid!'}), 401
 
         return make_response(jsonify(responseObject)), responseObject['code']
-
 
     return decorated
