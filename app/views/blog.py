@@ -21,8 +21,11 @@ class PostAPI(MethodView):
             responseObj['data'] = blogs_schema.dump(responseObj['data'])
         else:
             responseObj = Blog.get(post_id)
-            responseObj['data'] = blog_schema.dump(responseObj['data'])
-            responseObj['tags'] = tags_schema.dump(responseObj['tags'])
+            print(responseObj)
+            if responseObj['code'] == 200:
+                responseObj['data'] = blog_schema.dump(responseObj['data'])
+                responseObj['tags'] = tags_schema.dump(responseObj['tags'])
+
 
         return make_response(jsonify(responseObj)), responseObj['code']
 
@@ -68,15 +71,12 @@ class PostSearchAPI(MethodView):
     Post api
     """
     def post(self):
-        print(123123)
         text = request.get_json()
-        print(text)
         if text is None:
             responseObj = Blog.get_all()
             responseObj['data'] = {}
         else:
             responseObj = Blog.search_by_tag(text)
-            print(blogs_schema.dump(responseObj['data']))
             responseObj['data'] = blogs_schema.dump(responseObj['data'])
 
         return make_response(jsonify(responseObj)), responseObj['code']

@@ -50,7 +50,6 @@ class Blog(db.Model):
     def search_by_tag(cls, text=''):
         try:
             search = f"%{text}%"
-            print('sdfds', search)
             if text:
                 tags = Tag.query.filter(Tag.text.ilike(search)).all()
                 tag_ids = [tag.id for tag in tags]

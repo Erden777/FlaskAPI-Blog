@@ -10,6 +10,8 @@ class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     email = db.Column(db.String(255), unique=True, nullable=False)
+    name = db.Column(db.String(255), nullable=True)
+    surname = db.Column(db.String(255), nullable=True)
     password = db.Column(db.String(255), nullable=False)
     registered_on = db.Column(db.DateTime, nullable=False)
     admin = db.Column(db.Boolean, nullable=False, default=False)
@@ -25,7 +27,7 @@ class User(db.Model):
     def encode_auth_token(self, user_id):
         try:
             payload = {
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=3000),
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1, seconds=3000),
                 'iat': datetime.datetime.utcnow(),
                 'sub': user_id
             }
@@ -37,6 +39,7 @@ class User(db.Model):
             )
         except Exception as e:
             return e
+
 
     @classmethod
     def register(cls, post_data):
@@ -75,6 +78,51 @@ class User(db.Model):
             }
             return make_response(jsonify(responseObject)), 202
 
+
+    @classmethod
+    def profile_update(cls, **post_data):
+        print(post_data, 'post_data')
+        try:
+            # fetch the user data]
+            print(post_data['user'], 1233)
+            user_query = User.query.filter_by(
+                email=post_data.get('user')
+            )
+            user = user_query.first()
+            user.name = post_data.get('name')
+            user.surname = post_data.get('surname')
+            updated = {
+                'name': post_data.get('name'),
+                'surname': post_data.get('surname')
+            }
+
+            user_query.update(updated)
+            db.session.commit()
+            
+            responseObject = {
+                    'status': 'success',
+                    'data': {
+                        'user_id': user.id,
+                        'email': user.email,
+                        'name': user.name,
+                        'surname': user.surname,
+                        'admin': user.admin,
+                        'registered_on': user.registered_on
+                    },
+                    'code':200
+                }
+
+            return responseObject
+
+        except Exception as e:
+            print(e, 12333333)
+            responseObject = {
+                'status': 'fail',
+                'message': 'Try again',
+                'code':400
+            }
+
+
     @classmethod
     def cheek_auth_status(cls, auth_header):
         if auth_header:
@@ -99,6 +147,8 @@ class User(db.Model):
                     'data': {
                         'user_id': user.id,
                         'email': user.email,
+                        'name': user.name,
+                        'surname': user.surname,
                         'admin': user.admin,
                         'registered_on': user.registered_on
                     },
@@ -153,7 +203,7 @@ class User(db.Model):
                 'message': 'Try again',
                 'code':400
             }
-        
+    
 
     @staticmethod
     def decode_auth_token(auth_token):

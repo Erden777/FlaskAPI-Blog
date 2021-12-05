@@ -16,6 +16,7 @@ class RegisterAPI(MethodView):
     def post(self):
         # get the post data
         post_data = request.get_json()
+        print(post_data)
         responseObj = User.register(post_data)
         # check if user already exists
         return make_response(jsonify(responseObj)), responseObj['code']
@@ -39,10 +40,21 @@ class UserAPI(MethodView):
     def get(self):
         # get the auth token
         auth_header = request.headers.get('Authorization')
-        print(auth_header)
         responseObject = User.cheek_auth_status(auth_header)
         return make_response(jsonify(responseObject)), responseObject['code']
 
+    def put(self):
+        auth_header = request.headers.get('Authorization')
+        print(auth_header)
+        responseObject = User.cheek_auth_status(auth_header)
+        if responseObject['code'] == 200:
+            post_data = request.get_json()
+            post_data['user'] = responseObject['data']['email']
+            print(post_data)
+            responseObject = User.profile_update(**post_data)
+            print(post_data)
+
+        return make_response(jsonify(responseObject)), responseObject['code']
 
 class LogoutAPI(MethodView):
     
@@ -90,4 +102,6 @@ class LogoutAPI(MethodView):
 class UserSchema(Schema):
     id = fields.Str(required=True)
     email = fields.Str(required=True)
+    name = fields.Str(required=True)
+    surname = fields.Str(required=True)
     admin = fields.Bool(required=True)
