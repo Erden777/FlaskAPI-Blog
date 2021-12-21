@@ -5,7 +5,7 @@ class Comment(db.Model):
     __tablename__ = 'comment'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    text = db.Column(db.String(255), unique=True, nullable=False)
+    text = db.Column(db.String(255), nullable=False)
 
     user_id = db.Column(db.BigInteger, db.ForeignKey('users.id'), nullable=False)
     user = db.relationship("User", cascade="all, delete", foreign_keys=[user_id], backref="comments")
@@ -18,19 +18,23 @@ class Comment(db.Model):
 
 
     @classmethod
-    def create(cls, user, **post_data):
+    def create(cls, user, post_data):
         try:
             text = post_data.get('text')
             post_id = post_data.get('post_id')
-            comment = Comment(text=text, blog_id=post_id, user_id=user[0]['user_id'])
+            print(user[0]['user_id'], 'creating')
+            comment = Comment(text=text, blog_id=post_id, user_id=user[0]['user_id'])\
+
             db.session.add(comment)
             db.session.commit()
-
+            comment_id =comment.id
+            new_comment = Comment.query.filter_by(id=comment_id).first()
+            print(comment.user, 'user')
             responseObject = {
                 'status': 'success',
                 'data': {
                     'post_id': comment.id,
-                    'user': comment.user.name+' '+comment.user.surname,
+                    'user': str(comment.user.name)+' '+str(comment.user.surname),
                     'text': comment.text,
                     'created': comment.creation_date,
                 },

@@ -77,5 +77,5 @@ auth_blueprint.add_url_rule('/search/',
 
 
 comment_view = CommentAPI.as_view('comment_api')
-auth_blueprint.add_url_rule('/comment/',
+auth_blueprint.add_url_rule('/comment',
                             view_func=comment_view, methods=['POST',])

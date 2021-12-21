@@ -54,7 +54,9 @@ class User(db.Model):
             try:
                 user = User(
                     email=post_data.get('email'),
-                    password=post_data.get('password')
+                    password=post_data.get('password'),
+                    surname=post_data.get('surname'),
+                    name=post_data.get('name')
                 )
                 # insert the user
                 db.session.add(user)

@@ -23,10 +23,16 @@ class CommentAPI(MethodView):
         responseObject = User.cheek_auth_status(auth_header)
 
         if responseObject['code'] != 200:
+            print(responseObject['code'], 'error')
             return make_response(jsonify(responseObject)), responseObject['code']
         else:
             post_data = request.get_json()
-            responseObj = Comment.create(responseObject['data'], **post_data)
+            post_data = {
+                "text": request.form.get("text"),
+                "post_id": request.form.get("post_id")
+            }
+            print(post_data, 12333)
+            responseObj = Comment.create(responseObject['data'], post_data)
 
             return make_response(jsonify(responseObj)), responseObj['code']
 
