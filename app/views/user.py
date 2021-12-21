@@ -15,9 +15,17 @@ class RegisterAPI(MethodView):
     """
     def post(self):
         # get the post data
+
         post_data = request.get_json()
+        post_data = {
+            "email": request.form.get("email"),
+            "password": request.form.get("password"),
+            "surname": request.form.get("surname"),
+            "name": request.form.get("name")
+        }
         print(post_data)
         responseObj = User.register(post_data)
+        print(responseObj, 'sdfdsf')
         # check if user already exists
         return make_response(jsonify(responseObj)), responseObj['code']
 
@@ -27,8 +35,11 @@ class LoginAPI(MethodView):
     User Login Resource
     """
     def post(self):
-        # get the post data
-        post_data = request.get_json()
+        print(request.form.get('email'))
+        post_data = {
+            "email": request.form.get('email'),
+            "password": request.form.get('password')
+        }
         responseObject = User.login(**post_data)
         return make_response(jsonify(responseObject)), responseObject['code']
 
@@ -40,16 +51,18 @@ class UserAPI(MethodView):
     def get(self):
         # get the auth token
         auth_header = request.headers.get('Authorization')
+        print(auth_header)
         responseObject = User.cheek_auth_status(auth_header)
+        print(responseObject, 12312312)
         return make_response(jsonify(responseObject)), responseObject['code']
 
     def put(self):
         auth_header = request.headers.get('Authorization')
-        print(auth_header)
         responseObject = User.cheek_auth_status(auth_header)
         if responseObject['code'] == 200:
             post_data = request.get_json()
-            post_data['user'] = responseObject['data']['email']
+            print(responseObject)
+            post_data['user'] = responseObject['data'][0]['email']
             print(post_data)
             responseObject = User.profile_update(**post_data)
             print(post_data)

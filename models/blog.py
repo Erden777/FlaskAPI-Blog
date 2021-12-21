@@ -31,7 +31,7 @@ class Blog(db.Model):
                 ).first()
                 tags = [tag.tag for tag in post.tags]
 
-                print(tags)
+                print(post.comments)
                 responseObject = {'status':'Success',
                                     'code':200,
                                     'data':post,
@@ -73,22 +73,23 @@ class Blog(db.Model):
     @classmethod
     def create(cls, user, **post_data):
         try:
+            print(user, 'user')
             title = post_data.get('title')
+            print(title)
             message = post_data.get('message')
-            post = Blog(title=title, message=message, user_id=user['user_id'])
+            post = Blog(title=title, message=message, user_id=user[0]['user_id'])
             db.session.add(post)
             db.session.commit()
-
-            responseObject = {
-                'status':'success',
-                'data':{
-                        'post_id':post.id,
-                        'title':post.title,
-                        'message':post.message,
-                        'user_id':post.user_id,
-                        'created':post.creation_date,
+            responseObject= {
+                'status': 'success',
+                'data': {
+                        'post_id': post.id,
+                        'title': post.title,
+                        'message': post.message,
+                        'user_id': post.user_id,
+                        'created': post.creation_date,
                     },
-                'code':200
+                'code': 200
             }
             return responseObject
         except Exception as e:
@@ -96,7 +97,7 @@ class Blog(db.Model):
             responseObject = {
                     'status': 'fail',
                     'message': 'Something was wrong',
-                    'code':400
+                    'code': 400
                 }
             return responseObject
 
@@ -143,6 +144,7 @@ class Blog(db.Model):
                         'post_id':post.id,
                         'title':post.title,
                         'message':post.message,
+                        'comment': 1,
                         'user_id':post.user_id,
                         'created':post.creation_date,
                     },

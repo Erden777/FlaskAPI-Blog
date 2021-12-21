@@ -31,7 +31,11 @@ class User(db.Model):
                 'iat': datetime.datetime.utcnow(),
                 'sub': user_id
             }
-            
+            print(type(jwt.encode(
+                payload,
+                current_app.config.get('SECRET_KEY'),
+                algorithm='HS256'
+            )))
             return jwt.encode(
                 payload,
                 current_app.config.get('SECRET_KEY'),
@@ -44,7 +48,9 @@ class User(db.Model):
     @classmethod
     def register(cls, post_data):
         user = User.query.filter_by(email=post_data.get('email')).first()
+        print(user)
         if not user:
+            print('user none')
             try:
                 user = User(
                     email=post_data.get('email'),
@@ -144,14 +150,14 @@ class User(db.Model):
                 user = User.query.filter_by(id=resp).first()
                 responseObject = {
                     'status': 'success',
-                    'data': {
+                    'data': [{
                         'user_id': user.id,
                         'email': user.email,
                         'name': user.name,
                         'surname': user.surname,
                         'admin': user.admin,
                         'registered_on': user.registered_on
-                    },
+                    }],
                     'code':200
                 }
                 return responseObject
@@ -176,6 +182,7 @@ class User(db.Model):
             user = User.query.filter_by(
                 email=post_data.get('email')
             ).first()
+            print(user)
             if user and bcrypt.check_password_hash(
                 user.password, post_data.get('password')
             ):

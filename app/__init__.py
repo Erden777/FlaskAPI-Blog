@@ -17,6 +17,8 @@ app = Flask(
     instance_relative_config=False,
     root_path=base_dir,
 )
+
+
 bcrypt = Bcrypt(app)
 from app.marshmellow import init_ma
 init_ma(app)
@@ -30,6 +32,7 @@ if exists(env_file):
 
 
 if app.config['DEBUG']:
+
     print(' * working logger')
     fh = setup_logger('app', 'app/logs/error.log', logging.ERROR)
     

@@ -2,6 +2,7 @@ from re import search
 from app.views.user import UserAPI, LoginAPI, RegisterAPI, LogoutAPI
 from app.views.blog import PostAPI, PostSearchAPI
 from app.views.tags import TagAPI
+from app.views.comment import CommentAPI
 from flask_restful import Api
 from functools import wraps
 from flask import Blueprint
@@ -73,3 +74,8 @@ search_view = PostSearchAPI.as_view('search_post_api')
 
 auth_blueprint.add_url_rule('/search/',
                  view_func=search_view, methods=['POST',])
+
+
+comment_view = CommentAPI.as_view('comment_api')
+auth_blueprint.add_url_rule('/comment/',
+                            view_func=comment_view, methods=['POST',])
