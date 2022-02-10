@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="44cadddc-62c1-44b6-98bf-5fb33b5c93a1" name="yedil">
+        <fileTransfer accessType="SFTP" host="192.168.45.60" port="22" sshConfigId="85fcce89-a699-47c4-a7e5-798eac3ae87f" sshConfig="site@192.168.45.60:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+      <webServer id="6bd0264a-3dd8-4250-a4f3-82967d3b517a" name="gsb">
+        <fileTransfer accessType="SFTP" host="192.168.45.13" port="22" sshConfigId="65a3d591-7d52-4764-b794-dff0d3b6404a" sshConfig="site@192.168.45.13:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+      <webServer id="4b9d5e97-f32a-4ac8-a768-890b1701fb40" name="new">
+        <fileTransfer accessType="SFTP" host="192.168.45.115" port="22" sshConfigId="328e8a99-4a4b-4e80-94cd-c1aa5ff03544" sshConfig="site@192.168.45.115:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
