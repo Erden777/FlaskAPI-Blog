@@ -71,7 +71,7 @@ class Blog(db.Model):
             return responseObject
 
     @classmethod
-    def create(cls, user, **post_data):
+    def create(cls, user, post_data):
         try:
             print(user, 'user')
             title = post_data.get('title')

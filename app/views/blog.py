@@ -39,8 +39,12 @@ class PostAPI(MethodView):
             return make_response(jsonify(responseObject)), responseObject['code']
         else:
             post_data = request.get_json()
+            post_data = {
+                "title": request.form.get("title"),
+                "message": request.form.get("message")
+            }
             print(post_data, 1211)
-            responseObj = Blog.create(responseObject['data'], **post_data)
+            responseObj = Blog.create(responseObject['data'], post_data)
 
             return make_response(jsonify(responseObj)), responseObj['code']
     

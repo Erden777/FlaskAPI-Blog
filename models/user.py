@@ -5,6 +5,7 @@ import jwt
 import datetime 
 from flask import current_app
 
+
 class User(db.Model):
     __tablename__ = 'users'
 
@@ -54,9 +55,7 @@ class User(db.Model):
             try:
                 user = User(
                     email=post_data.get('email'),
-                    password=post_data.get('password'),
-                    surname=post_data.get('surname'),
-                    name=post_data.get('name')
+                    password=post_data.get('password')
                 )
                 # insert the user
                 db.session.add(user)
