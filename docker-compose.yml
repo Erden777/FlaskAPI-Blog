@@ -1,0 +1,75 @@
+version: '3.7'
+
+volumes:
+  postgres:
+  redis_data_univer:
+  rabbitmq_data_univer:
+  media:
+  static:
+  portainer_data:
+    driver: local
+#  elasticsearch-data-volume:
+#    driver: local
+
+networks:
+  diplom-project_univer-net:
+   external: true
+
+services:
+  registerservice:
+    container_name: registerservice
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - .:/register_data
+      - media:/media
+    env_file:
+      - ./.env.dev
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    networks:
+      - diplom-project_univer-net
+
+
+
+#  queue:
+#    container_name: queue
+#    restart: always
+#    build:
+#      context: .
+#      dockerfile: Dockerfile.dev
+#    command: 'python -u consumer.py'
+#    depends_on:
+#      - uniservice
+#      - rabbitmq-univer
+#    networks:
+#      - univer-net
+
+
+  postgres:
+    restart: always
+    image: postgres
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    env_file:
+      - ./.env.db
+    ports:
+      - "5432:5432"
+    networks:
+      - diplom-project_univer-net
+
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: zaysan
+    ports:
+      - "5050:80"
+    networks:
+      - diplom-project_univer-net
