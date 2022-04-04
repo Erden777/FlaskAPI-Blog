@@ -32,11 +32,6 @@ class User(db.Model):
                 'iat': datetime.datetime.utcnow(),
                 'sub': user_id
             }
-            print(type(jwt.encode(
-                payload,
-                current_app.config.get('SECRET_KEY'),
-                algorithm='HS256'
-            )))
             return jwt.encode(
                 payload,
                 current_app.config.get('SECRET_KEY'),
@@ -49,9 +44,7 @@ class User(db.Model):
     @classmethod
     def register(cls, post_data):
         user = User.query.filter_by(email=post_data.get('email')).first()
-        print(user)
         if not user:
-            print('user none')
             try:
                 user = User(
                     email=post_data.get('email'),
@@ -64,6 +57,7 @@ class User(db.Model):
                 auth_token = user.encode_auth_token(user.id)
                 responseObject = {
                     'status': 'success',
+                    'tdid': user.id,
                     'message': 'Successfully registered.',
                     'auth_token': auth_token.decode(),
                     'code':201
@@ -183,7 +177,6 @@ class User(db.Model):
             user = User.query.filter_by(
                 email=post_data.get('email')
             ).first()
-            print(user)
             if user and bcrypt.check_password_hash(
                 user.password, post_data.get('password')
             ):
@@ -193,7 +186,7 @@ class User(db.Model):
                         'status': 'success',
                         'message': 'Successfully logged in.',
                         'auth_token': auth_token.decode(),
-                        'code':200
+                        'code': 200
                     }
                     return responseObject
             else:

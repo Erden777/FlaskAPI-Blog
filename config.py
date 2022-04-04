@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ENV_FILE = os.path.join(BASE_DIR, '.env')
 APP_DIR = os.path.join(BASE_DIR, 'app')
-
+DEBUG=True
 LOGFILE = 'app/logs/error.log'
 
 if os.path.exists(ENV_FILE):
@@ -26,7 +26,7 @@ BCRYPT_LOG_ROUNDS = 4
 class BaseConfig:
     """Base configuration."""
     SECRET_KEY = os.getenv('SECRET_KEY', 'my_precious')
-    DEBUG = False
+    DEBUG = True
     BCRYPT_LOG_ROUNDS = 13
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 

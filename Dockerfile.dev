@@ -7,11 +7,13 @@ COPY ./requirements.txt /requirements.txt
 RUN pip3 install --upgrade pip
 RUN pip3 install --upgrade -r /requirements.txt
 
-ADD . /registerservice
-WORKDIR /registerservice
+ADD . /FlaskAPI-Blog
+WORKDIR /FlaskAPI-Blog
+
+CMD [ "uwsgi", "--ini", "app.ini" ]
 
 ENV WAIT_VERSION 2.7.2
-
+ENV FLASK_ENV = "development"
 ENV PORT 8000
 
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/$WAIT_VERSION/wait /wait

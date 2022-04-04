@@ -31,11 +31,12 @@ if exists(env_file):
     load_dotenv(dotenv_path=env_file)
 
 
-if app.config['DEBUG']:
+# if app.config['DEBUG']:
+#
+#     print(' * working logger')
+#     fh = setup_logger('app', 'app/logs/error.log', logging.ERROR)
 
-    print(' * working logger')
-    fh = setup_logger('app', 'app/logs/error.log', logging.ERROR)
-    
+
 CORS(app, supports_credentials=True)
 db_init(app, create=True)
 
