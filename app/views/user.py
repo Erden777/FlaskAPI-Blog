@@ -17,14 +17,17 @@ class RegisterAPI(MethodView):
         # get the post data
 
         data = request.get_json()
+        print(data)
         post_data = {
             "email": request.form.get("email") or data['email'],
             "password": request.form.get("password") or data['password'],
             "surname": request.form.get("surname"),
+            "group_id": request.form.get('group_id') or data['group_id'],
             "name": request.form.get("name")
         }
         responseObj = User.register(post_data)
         # check if user already exists
+        print(responseObj, 'this is resposne obj')
         return make_response(jsonify(responseObj)), responseObj['code']
 
 
@@ -39,8 +42,11 @@ class LoginAPI(MethodView):
             "email": request.form.get('email') or data['email'],
             "password": request.form.get('password') or data['password']
         }
+        print('login in')
         print(post_data)
         responseObject = User.login(**post_data)
+        print(responseObject, 'this is resposne obj')
+
         return make_response(jsonify(responseObject)), responseObject['code']
 
 

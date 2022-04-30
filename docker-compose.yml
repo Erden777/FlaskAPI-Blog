@@ -2,12 +2,12 @@ version: '3.7'
 
 volumes:
   postgres:
-  redis_data_univer:
-  rabbitmq_data_univer:
-  media:
-  static:
-  portainer_data:
-    driver: local
+#  redis_data_univer:
+#  rabbitmq_data_univer:
+#  media:
+#  static:
+#  portainer_data:
+#    driver: local
 #  elasticsearch-data-volume:
 #    driver: local
 
@@ -23,8 +23,7 @@ services:
       context: .
       dockerfile: Dockerfile.dev
     volumes:
-      - .:/register_data
-      - media:/media
+      - .:/FlaskAPI-Blog
     env_file:
       - ./.env.dev
     ports:
@@ -33,21 +32,6 @@ services:
       - postgres
     networks:
       - diplom-project_univer-net
-
-
-
-#  queue:
-#    container_name: queue
-#    restart: always
-#    build:
-#      context: .
-#      dockerfile: Dockerfile.dev
-#    command: 'python -u consumer.py'
-#    depends_on:
-#      - uniservice
-#      - rabbitmq-univer
-#    networks:
-#      - univer-net
 
 
   postgres:

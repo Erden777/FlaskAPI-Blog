@@ -4,6 +4,30 @@ from app import bcrypt
 import jwt
 import datetime 
 from flask import current_app
+import enum
+
+
+class Group(db.Model):
+    __tablename__ = "group"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    group_name = db.Column(db.String(500), nullable=False)
+
+
+class CourseChoices(enum.Enum):
+    first = 1
+    second = 2
+    third = 3
+    fourth = 4
+
+
+class Speciality(db.Model):
+    __tablename__ = "speciality"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    code = db.Column(db.String(100), nullable=False)
+    name_kk = db.Column(db.String(500), nullable=False)
+    name_en = db.Column(db.String(500), nullable=True)
 
 
 class User(db.Model):
@@ -11,27 +35,49 @@ class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     email = db.Column(db.String(255), unique=True, nullable=False)
-    name = db.Column(db.String(255), nullable=True)
-    surname = db.Column(db.String(255), nullable=True)
+    full_name_kk = db.Column(db.String(255), nullable=True)
+    full_name_en = db.Column(db.String(255), nullable=True)
     password = db.Column(db.String(255), nullable=False)
+    birth_date = db.Column(db.Date, nullable=True)
     registered_on = db.Column(db.DateTime, nullable=False)
     admin = db.Column(db.Boolean, nullable=False, default=False)
+    group_id = db.Column(db.BigInteger, db.ForeignKey('group.id'), nullable=False)
+    group = db.relationship("Group", cascade="all, delete", foreign_keys=[group_id], backref="users")
+    speciality_id = db.Column(db.BigInteger, db.ForeignKey('speciality.id'), nullable=True)
+    speciality = db.relationship("Speciality", cascade="all, delete", foreign_keys=[speciality_id], backref="users")
+    course = db.Column(db.Enum(CourseChoices))
 
-    def __init__(self, email, password, admin=False):
+    def __init__(self, email, password, group_id,admin=False):
         self.email = email
         self.password = bcrypt.generate_password_hash(
             password, current_app.config['BCRYPT_LOG_ROUNDS']
         ).decode()
+        self.group_id = group_id
         self.registered_on = datetime.datetime.now()
         self.admin = admin
 
     def encode_auth_token(self, user_id):
         try:
             payload = {
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1, seconds=3000),
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=30, seconds=3000),
                 'iat': datetime.datetime.utcnow(),
-                'sub': user_id
+                'sub': user_id,
+                'full_name_kk': self.full_name_kk,
+                'full_name_en': self.full_name_en,
+                'group': {
+                    'id': self.group_id,
+                    'group_name': self.group.group_name
+                },
+                'speciality': {
+                    'name_kk': self.speciality.name_kk,
+                    'name_en': self.speciality.name_en,
+                    'code': self.speciality.code
+                },
+                'birth_date': str(self.birth_date),
+                'course': self.course.value
             }
+
+            print(payload)
             return jwt.encode(
                 payload,
                 current_app.config.get('SECRET_KEY'),
@@ -48,7 +94,8 @@ class User(db.Model):
             try:
                 user = User(
                     email=post_data.get('email'),
-                    password=post_data.get('password')
+                    password=post_data.get('password'),
+                    group_id=post_data.get('group_id')
                 )
                 # insert the user
                 db.session.add(user)
@@ -181,6 +228,7 @@ class User(db.Model):
                 user.password, post_data.get('password')
             ):
                 auth_token = user.encode_auth_token(user.id)
+                print(auth_token)
                 if auth_token:
                     responseObject = {
                         'status': 'success',
@@ -224,6 +272,8 @@ class User(db.Model):
             return 'Signature expired. Please log in again.'
         except jwt.InvalidTokenError:
             return 'Invalid token. Please log in again.'
+
+
 
 
 class BlacklistToken(db.Model):
