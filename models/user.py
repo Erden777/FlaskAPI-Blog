@@ -234,6 +234,8 @@ class User(db.Model):
                         'status': 'success',
                         'message': 'Successfully logged in.',
                         'auth_token': auth_token.decode(),
+                        'user_id': user.id,
+                        'full_name': user.full_name_kk,
                         'code': 200
                     }
                     return responseObject
